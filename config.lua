@@ -18,7 +18,7 @@ lvim.leader = "space"
 -- add your own keymapping
 lvim.keys.normal_mode["<space>t"] = ":set splitright<cr>:vsplit<cr>:term<cr>i"
 lvim.keys.normal_mode["<S-s>"] = ":w<cr>"
-lvim.keys.normal_mode["<space>q"] = ":Q<cr>"
+lvim.keys.normal_mode["<space>q"] = ":q!<cr>"
 lvim.keys.normal_mode["<space>wq"] = ":wq<cr>"
 lvim.keys.normal_mode["<space>v"] = ":sp<cr>"
 lvim.keys.normal_mode["<space>s"] = ":vs<cr>"
@@ -37,7 +37,6 @@ function CompileRun()
 end
 lvim.keys.normal_mode["zr"] = ":lua CompileRun()<cr>"
 -----plug keymappings
-lvim.builtin.which_key.mappings = {}
 lvim.keys.normal_mode["<F3>"] = ":NvimTreeToggle<cr>"
 lvim.keys.normal_mode["<space>ff"] = ":Telescope find_files<cr>"
 lvim.keys.normal_mode["<space>fg"] = ":Telescope live_grep<cr>"
@@ -48,32 +47,12 @@ lvim.keys.normal_mode["gd"] = ":lua vim.lsp.buf.definition()<cr>"
 lvim.keys.normal_mode["gD"] = ":lua vim.lsp.buf.declaration()<cr>"
 lvim.keys.normal_mode["[g"] = ":lua vim.diagnostic.goto_prev()<cr>"
 lvim.keys.normal_mode["]g"] = ":lua vim.diagnostic.goto_next()<cr>"
-
 lvim.keys.normal_mode["<leader>1"] = ":BufferLineGoToBuffer 1<cr>"
 lvim.keys.normal_mode["<leader>2"] = ":BufferLineGoToBuffer 2<cr>"
 lvim.keys.normal_mode["<leader>3"] = ":BufferLineGoToBuffer 3<cr>"
 lvim.keys.normal_mode["<leader>4"] = ":BufferLineGoToBuffer 4<cr>"
 lvim.keys.normal_mode["<leader>5"] = ":BufferLineGoToBuffer 5<cr>"
 lvim.keys.normal_mode["<leader>6"] = ":BufferLineGoToBuffer 6<cr>"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -106,6 +85,9 @@ lvim.builtin.bufferline.options.separator_style = "slant"
 
 
 -- Use which-key to add extra bindings with the leader-key prefix
+-- 删除系统所有which-key映射
+-- lvim.builtin.which_key.mappings = {}
+lvim.builtin.which_key.mappings["f"]={}
 -- lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
 -- lvim.builtin.which_key.mappings["t"] = {
 --   name = "+Trouble",
@@ -155,7 +137,7 @@ lvim.builtin.treesitter.highlight.enabled = true
 -- ---see the full default list `:lua print(vim.inspect(lvim.lsp.automatic_configuration.skipped_servers))`
 -- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "pyright" })
 -- local opts = {} -- check the lspconfig documentation for a list of all possible options
--- require("lvim.lsp.manager").setup("pyright", opts)
+require("lvim.lsp.manager").setup("pyright", opts)
 
 -- ---remove a server from the skipped list, e.g. eslint, or emmet_ls. !!Requires `:LvimCacheReset` to take effect!!
 -- ---`:LvimInfo` lists which server(s) are skiipped for the current filetype
