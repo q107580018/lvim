@@ -22,27 +22,32 @@ lvim.keys.normal_mode["<space>q"] = ":q!<cr>"
 lvim.keys.normal_mode["<space>wq"] = ":wq<cr>"
 lvim.keys.normal_mode["<space>v"] = ":sp<cr>"
 lvim.keys.normal_mode["<space>s"] = ":vs<cr>"
+lvim.keys.normal_mode["<space>y"] = '"+y'
 lvim.keys.normal_mode["<C-l>"] = "<C-w>l"
 lvim.keys.normal_mode["<C-h>"] = "<C-w>h"
 lvim.keys.normal_mode["<C-j>"] = "<C-w>j"
 lvim.keys.normal_mode["<C-k>"] = "<C-w>k"
+-- lvim.keys.normal_mode["<M-j>"] = false
+-- lvim.keys.normal_mode["<M-k>"] = false
+lvim.keys.insert_mode["kj"] = false
 function CompileRun()
-    local filetype = vim.bo.filetype
-    if filetype == "go" then
-        vim.cmd("!go run %")
-    elseif filetype == "python" then
-        vim.cmd("!python3 %")
-    end
+  local filetype = vim.bo.filetype
+  if filetype == "go" then
+    vim.cmd("!go run %")
+  elseif filetype == "python" then
+    vim.cmd("!python3 %")
+  end
 
 end
+
 lvim.keys.normal_mode["zr"] = ":lua CompileRun()<cr>"
 -----plug keymappings
 lvim.keys.normal_mode["<F3>"] = ":NvimTreeToggle<cr>"
 lvim.keys.normal_mode["<space>ff"] = ":Telescope find_files<cr>"
 lvim.keys.normal_mode["<space>fg"] = ":Telescope live_grep<cr>"
 lvim.keys.normal_mode["K"] = ":lua vim.lsp.buf.hover()<cr>"
-lvim.keys.normal_mode["<leader>rn"]= ":lua vim.lsp.buf.rename()<cr>"
-lvim.keys.normal_mode["<leader>ca"]= ":lua vim.lsp.buf.code_action()<cr>"
+lvim.keys.normal_mode["<leader>rn"] = ":lua vim.lsp.buf.rename()<cr>"
+lvim.keys.normal_mode["<leader>ca"] = ":lua vim.lsp.buf.code_action()<cr>"
 lvim.keys.normal_mode["gd"] = ":lua vim.lsp.buf.definition()<cr>"
 lvim.keys.normal_mode["gD"] = ":lua vim.lsp.buf.declaration()<cr>"
 lvim.keys.normal_mode["[g"] = ":lua vim.diagnostic.goto_prev()<cr>"
@@ -87,7 +92,7 @@ lvim.builtin.bufferline.options.separator_style = "slant"
 -- Use which-key to add extra bindings with the leader-key prefix
 -- 删除系统所有which-key映射
 -- lvim.builtin.which_key.mappings = {}
-lvim.builtin.which_key.mappings["f"]={}
+lvim.builtin.which_key.mappings["f"] = {}
 -- lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
 -- lvim.builtin.which_key.mappings["t"] = {
 --   name = "+Trouble",
@@ -134,10 +139,13 @@ lvim.builtin.treesitter.highlight.enabled = true
 -- lvim.lsp.automatic_servers_installation = false
 
 -- ---configure a server manually. !!Requires `:LvimCacheReset` to take effect!!
--- ---see the full default list `:lua print(vim.inspect(lvim.lsp.automatic_configuration.skipped_servers))`
 -- vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "pyright" })
+-- ---see the full default list `:lua print(vim.inspect(lvim.lsp.automatic_configuration.skipped_servers))`
 -- local opts = {} -- check the lspconfig documentation for a list of all possible options
 require("lvim.lsp.manager").setup("pyright", opts)
+require("lvim.lsp.manager").setup("gopls", opts)
+require("lvim.lsp.manager").setup("bashls", opts)
+require("lvim.lsp.manager").setup("sumneko_lua", opts)
 
 -- ---remove a server from the skipped list, e.g. eslint, or emmet_ls. !!Requires `:LvimCacheReset` to take effect!!
 -- ---`:LvimInfo` lists which server(s) are skiipped for the current filetype
@@ -156,20 +164,21 @@ require("lvim.lsp.manager").setup("pyright", opts)
 -- end
 
 -- -- set a formatter, this will override the language server formatting capabilities (if it exists)
--- local formatters = require "lvim.lsp.null-ls.formatters"
--- formatters.setup {
---   { command = "black", filetypes = { "python" } },
---   { command = "isort", filetypes = { "python" } },
---   {
---     -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
---     command = "prettier",
---     ---@usage arguments to pass to the formatter
---     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
---     extra_args = { "--print-with", "100" },
---     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
---     filetypes = { "typescript", "typescriptreact" },
---   },
--- }
+local formatters = require "lvim.lsp.null-ls.formatters"
+formatters.setup {
+  --   { command = "black", filetypes = { "python" } },
+  --   { command = "isort", filetypes = { "python" } },
+  { command = "gofmt", filetypes = { "go" } },
+  --   {
+  --     -- each formatter accepts a list of options identical to https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md#Configuration
+  --     command = "prettier",
+  --     ---@usage arguments to pass to the formatter
+  --     -- these cannot contain whitespaces, options such as `--line-width 80` become either `{'--line-width', '80'}` or `{'--line-width=80'}`
+  --     extra_args = { "--print-with", "100" },
+  --     ---@usage specify which filetypes to enable. By default a providers will attach to all the filetypes it supports.
+  --     filetypes = { "typescript", "typescriptreact" },
+  --   },
+}
 
 -- -- set additional linters
 -- local linters = require "lvim.lsp.null-ls.linters"
@@ -190,13 +199,30 @@ require("lvim.lsp.manager").setup("pyright", opts)
 -- }
 
 -- Additional Plugins
--- lvim.plugins = {
---     {"folke/tokyonight.nvim"},
---     {
---       "folke/trouble.nvim",
---       cmd = "TroubleToggle",
---     },
--- }
+lvim.plugins = {
+  -- {"folke/tokyonight.nvim"},
+  -- {
+  --   "folke/trouble.nvim",
+  --   cmd = "TroubleToggle",
+  -- },
+  { "phaazon/hop.nvim",
+    event = "BufRead",
+    config = function()
+      require("hop").setup()
+      vim.api.nvim_set_keymap("n", "s", ":HopChar2<cr>", { silent = true })
+      vim.api.nvim_set_keymap("n", "<space><space>s", ":HopWord<cr>", { silent = true })
+      vim.api.nvim_set_keymap("n", "<space><space>f", ":HopChar1<cr>", { silent = true })
+    end, },
+  { "tpope/vim-surround" },
+  { "mg979/vim-visual-multi",
+    config = function()
+      vim.api.nvim_set_keymap("n", "<M-j>", "<Plug>(VM-Add-Cursor-Down)", { silent = true })
+      vim.api.nvim_set_keymap("n", "<M-k>", "<Plug>(VM-Add-Cursor-Up)", { silent = true })
+      -- disable backspace mapping
+      vim.g.VM_maps = { ["I BS"] = '' }
+    end, },
+}
+
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- lvim.autocommands.custom_groups = {
@@ -204,7 +230,7 @@ require("lvim.lsp.manager").setup("pyright", opts)
 -- }
 -- WSL跟系统共享剪贴板
 if vim.fn.has('wsl') then
-    vim.cmd [[
+  vim.cmd [[
   augroup Yank
   autocmd!
   autocmd TextYankPost * :call system('/mnt/c/windows/system32/clip.exe ',@")
@@ -213,3 +239,6 @@ if vim.fn.has('wsl') then
 end
 -- Nvimtree auto close
 vim.api.nvim_command("autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif")
+
+-- 禁用h,l在行首行尾时换行
+vim.opt.whichwrap = "b,s"
