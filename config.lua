@@ -27,8 +27,6 @@ lvim.keys.normal_mode["<C-l>"] = "<C-w>l"
 lvim.keys.normal_mode["<C-h>"] = "<C-w>h"
 lvim.keys.normal_mode["<C-j>"] = "<C-w>j"
 lvim.keys.normal_mode["<C-k>"] = "<C-w>k"
--- lvim.keys.normal_mode["<M-j>"] = false
--- lvim.keys.normal_mode["<M-k>"] = false
 lvim.keys.insert_mode["kj"] = false
 function CompileRun()
   local filetype = vim.bo.filetype
@@ -59,10 +57,6 @@ lvim.keys.normal_mode["<leader>4"] = ":BufferLineGoToBuffer 4<cr>"
 lvim.keys.normal_mode["<leader>5"] = ":BufferLineGoToBuffer 5<cr>"
 lvim.keys.normal_mode["<leader>6"] = ":BufferLineGoToBuffer 6<cr>"
 
-
-
-
-
 -- unmap a default keymapping
 -- lvim.keys.normal_mode["<C-Up>"] = false
 -- edit a default keymapping
@@ -88,6 +82,9 @@ lvim.builtin.telescope.defaults.mappings = {
 local _, actions = pcall(require, "bufferline.actions")
 lvim.builtin.bufferline.options.separator_style = "slant"
 
+local _, actions = pcall(require, "nvimtree.actions")
+-- Nvimtree auto close
+vim.api.nvim_command("autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif")
 
 -- Use which-key to add extra bindings with the leader-key prefix
 -- 删除系统所有which-key映射
@@ -111,7 +108,7 @@ lvim.builtin.alpha.mode = "dashboard"
 lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
-lvim.builtin.nvimtree.show_icons.git = 0
+lvim.builtin.nvimtree.show_icons.git = 1
 
 -- if you don't want all the parsers change this to a table of the ones you want
 lvim.builtin.treesitter.ensure_installed = {
@@ -237,8 +234,6 @@ if vim.fn.has('wsl') then
   augroup END
   ]]
 end
--- Nvimtree auto close
-vim.api.nvim_command("autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif")
 
 -- 禁用h,l在行首行尾时换行
 vim.opt.whichwrap = "b,s"
